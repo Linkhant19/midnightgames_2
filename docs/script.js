@@ -1,38 +1,44 @@
 const player = document.getElementById("square");
 const barrier = document.getElementById("barrier");
-const colors = ['red', 'green', 'blue', 'yellow']
+const scoreDisplay = document.getElementById("score"); 
+const colors = ['pink', 'green', 'skyblue', 'yellow']
 let colorIndex = 0;
-
-function jump() {
-  if (player.classList != "jump") {
-    player.classList.add("jump");
-
-    setTimeout(function () {
-      player.classList.remove("jump");
-    }, 300);
-  }
-}
+let score = 0;
+let updateScore, isAlive;
 
 barrier.addEventListener('animationiteration', function() {
     const randomColorIndex = Math.floor(Math.random() * colors.length);
     barrier.style.backgroundColor = colors[randomColorIndex];
 });
 
-let isAlive = setInterval(function () {
-  // get current barrier X position
-  let barrierLeft = parseInt(
-    window.getComputedStyle(barrier).getPropertyValue("left")
-  );
+function restartGame() {
+    clearInterval(updateScore);
+    clearInterval(isAlive);
+    score = 0;
+    scoreDisplay.textContent = score;
+    startGame();
+}
 
-  // detect collision if color not the same
-  if (barrierLeft < 50 && barrierLeft > 0 && barrier.style.backgroundColor != player.style.backgroundColor) {
-    alert("Game Over!");
-  }
-}, 10);
+function startGame() {
+    updateScore = setInterval(function () {
+        score++;
+        scoreDisplay.textContent = score;
+    }, 200);
 
+    isAlive = setInterval(function () {
+        let barrierLeft = parseInt(window.getComputedStyle(barrier).getPropertyValue("left"));
+        if (barrierLeft < 76 && barrierLeft > 0 && barrier.style.backgroundColor !== player.style.backgroundColor) {
+            alert("Game Over!");
+            restartGame();
+        }
+    }, 10);
+}
+  
 document.addEventListener("keydown", function (event) {
     if (event.code === 'Space') {
         colorIndex = (colorIndex + 1) % colors.length;
         square.style.backgroundColor = colors[colorIndex];
     }
-});
+}); 
+
+startGame();
