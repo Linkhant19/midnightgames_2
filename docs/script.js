@@ -41,4 +41,10 @@ document.addEventListener("keydown", function (event) {
     }
 }); 
 
+document.addEventListener("touchstart", function () {
+    colorIndex = (colorIndex + 1) % colors.length;
+    square.style.backgroundColor = colors[colorIndex];
+});
+
+
 startGame();
